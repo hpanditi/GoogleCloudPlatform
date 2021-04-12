@@ -5,10 +5,10 @@ const {Spanner} = require('@google-cloud/spanner');
 const spanner = new Spanner();
 
 // Your Cloud Spanner instance ID
-const instanceId = 'test-instance';
+const instanceId = 'restaurant-instance';
 
 // Your Cloud Spanner database ID
-const databaseId = 'example-db';
+const databaseId = 'db-menu';
 
 /**
  * HTTP Cloud Function.
@@ -23,7 +23,7 @@ exports.get = async (req, res) => {
 
   // The query to execute
   const query = {
-    sql: 'SELECT * FROM Albums',
+    sql: 'SELECT * FROM menu',
   };
 
   // Execute the query
@@ -32,9 +32,13 @@ exports.get = async (req, res) => {
     const rows = results[0].map(row => row.toJSON());
     rows.forEach(row => {
       res.write(
-        `SingerId: ${row.SingerId}, ` +
-          `AlbumId: ${row.AlbumId}, ` +
-          `AlbumTitle: ${row.AlbumTitle}\n`
+        CREATE TABLE menu (
+	Category STRING(MAX),
+	Item STRING(MAX),
+	Ingredients STRING(MAX),
+	Price NUMERIC,
+) PRIMARY KEY (Category)
+
       );
     });
     res.status(200).end();
@@ -42,3 +46,4 @@ exports.get = async (req, res) => {
     res.status(500).send(`Error querying Spanner: ${err}`);
   }
 };
+
